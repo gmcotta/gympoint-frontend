@@ -1,18 +1,23 @@
 import React from 'react';
+import { Form, Input } from '@rocketseat/unform';
 import logo from '~/assets/logo.png';
 import { Container } from './styles';
 
 export default function Login() {
+  function handleSubmit(data) {
+    console.tron.log(data);
+  }
+
   return (
     <Container>
       <img src={logo} alt="Gympoint" align="middle" />
-      <form>
+      <Form onSubmit={handleSubmit}>
         <span>Your e-mail</span>
-        <input type="email" placeholder="example@email.com" />
+        <Input name="email" type="email" placeholder="example@email.com" />
         <span>Your password</span>
-        <input type="password" />
+        <Input name="password" type="password" />
         <button type="submit">Login</button>
-      </form>
+      </Form>
     </Container>
   );
 }
