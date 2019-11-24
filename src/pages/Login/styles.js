@@ -14,18 +14,24 @@ export const Container = styled.div`
     flex-direction: column;
     margin-top: 30px;
 
-    span {
+    span#field_title {
+      color: #000;
       text-align: left;
       text-transform: uppercase;
       font-weight: bold;
-      margin-bottom: 8px;
+      margin: 20px 0 8px 0;
+    }
+
+    span {
+      color: #ee4d64;
+      text-align: left;
+      margin: 5px 0;
     }
 
     input {
       height: 45px;
       padding: 14px;
       border: 1px solid #ddd;
-      margin-bottom: 20px;
 
       &::placeholder {
         color: #999;
@@ -36,6 +42,7 @@ export const Container = styled.div`
       background: #ee4d64;
       border: 0;
       border-radius: 4px;
+      margin-top: 15px;
       padding: 14px;
       color: #fff;
       font-weight: bold;
