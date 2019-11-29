@@ -7,7 +7,7 @@ export const Container = styled.div`
 
 export const Content = styled.div`
   height: 64px;
-  max-width: 1200px;
+  max-width: 1380px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -27,9 +27,9 @@ export const Content = styled.div`
       color: #999;
       font-weight: bold;
       text-transform: uppercase;
-      padding: 0 20px;
+      margin: 0 20px;
       &:first-child {
-        padding-left: 0;
+        margin-left: 0;
       }
     }
   }
