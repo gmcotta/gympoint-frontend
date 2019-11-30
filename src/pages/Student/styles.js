@@ -44,7 +44,7 @@ export const AddButton = styled.button`
   }
 `;
 
-export const SearchField = styled.div`
+export const SearchField = styled.form`
   display: flex;
   align-items: center;
   position: relative;
@@ -61,5 +61,38 @@ export const SearchField = styled.div`
     padding: 16px 16px 16px 36px;
     max-height: 36px;
     color: #999;
+  }
+`;
+
+export const Table = styled.table`
+  background-color: #fff;
+  width: 100%;
+  margin: 20px auto;
+  border-radius: 4px;
+  padding: 20px;
+
+  th {
+    text-transform: uppercase;
+    text-align: left;
+  }
+
+  td {
+    color: #666;
+    padding: 16px 0;
+  }
+
+  td#options {
+    text-align: right;
+
+    a {
+      color: #4d85ee;
+    }
+
+    button {
+      color: #de3b3b;
+      margin-left: 25px;
+      background: none;
+      border: none;
+    }
   }
 `;
