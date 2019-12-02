@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MdAdd, MdSearch } from 'react-icons/md';
+import { toast } from 'react-toastify';
 import api from '~/services/api';
 import history from '~/services/history';
 import {
@@ -46,13 +47,12 @@ export default function Student() {
     if (window.confirm('Are you sure you wanna remove this student?')) {
       try {
         await api.delete(`students/${id}`);
-        const response = await api.get('students', {
-          params: { name },
-        });
-        const studentsData = response.data;
-        setStudents(studentsData);
+        const newStudents = students.filter(student => student.id !== id);
+        setStudents(newStudents);
+        toast.success('Student removed successfully.');
         // console.log(studentsData);
       } catch (error) {
+        toast.error('An error occurred. Plase, try again later.');
         // console.log(error);
       }
     }
