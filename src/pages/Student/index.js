@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { MdAdd, MdSearch } from 'react-icons/md';
 import api from '~/services/api';
 import history from '~/services/history';
@@ -10,6 +9,8 @@ import {
   AddButton,
   SearchField,
   Table,
+  Edit,
+  Remove,
 } from './styles';
 
 export default function Student() {
@@ -23,27 +24,38 @@ export default function Student() {
       });
       const studentsData = response.data;
       setStudents(studentsData);
-      console.log(studentsData);
+      // console.log(studentsData);
     }
     loadStudents();
   }, [name]);
 
   function handleAddStudent() {
-    alert('Add student');
+    history.push('students/new');
   }
 
   function handleStudentName(e) {
     setName(e.target.value);
   }
 
-  function handleFindStudent(e) {
-    e.preventDefault();
-    alert(name);
+  function handleStudentEdit(id) {
+    // console.log(`Edit student ${id}`);
+    history.push(`students/${id}`);
   }
 
-  function handleStudentEdit(id) {
-    console.log(`Edit student ${id}`);
-    history.push(`students/${id}`);
+  async function handleStudentRemove(id) {
+    if (window.confirm('Are you sure you wanna remove this student?')) {
+      try {
+        await api.delete(`students/${id}`);
+        const response = await api.get('students', {
+          params: { name },
+        });
+        const studentsData = response.data;
+        setStudents(studentsData);
+        // console.log(studentsData);
+      } catch (error) {
+        // console.log(error);
+      }
+    }
   }
 
   return (
@@ -55,7 +67,7 @@ export default function Student() {
             <MdAdd size={16} />
             <span>Add</span>
           </AddButton>
-          <SearchField onSubmit={handleFindStudent}>
+          <SearchField>
             <MdSearch size={16} />
             <input
               type="text"
@@ -83,10 +95,20 @@ export default function Student() {
                 <td>{student.email}</td>
                 <td>{student.age}</td>
                 <td id="options">
-                  <Link to="/">edit</Link>
-                  <button type="button" onClick={() => {}}>
+                  <Edit
+                    type="button"
+                    onClick={() => handleStudentEdit(student.id)}
+                  >
+                    edit
+                  </Edit>
+                  <Remove
+                    type="button"
+                    onClick={() => {
+                      handleStudentRemove(student.id);
+                    }}
+                  >
                     remove
-                  </button>
+                  </Remove>
                 </td>
               </tr>
             ))}

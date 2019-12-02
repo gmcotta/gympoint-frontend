@@ -83,16 +83,19 @@ export const Table = styled.table`
 
   td#options {
     text-align: right;
-
-    a {
-      color: #4d85ee;
-    }
-
-    button {
-      color: #de3b3b;
-      margin-left: 25px;
-      background: none;
-      border: none;
-    }
   }
+`;
+
+export const Edit = styled.button`
+  color: #4d85ee;
+  margin-left: 25px;
+  background: none;
+  border: none;
+`;
+
+export const Remove = styled.button`
+  color: #de3b3b;
+  margin-left: 25px;
+  background: none;
+  border: none;
 `;
