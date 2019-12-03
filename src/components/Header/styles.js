@@ -31,6 +31,10 @@ export const Content = styled.div`
       &:first-child {
         margin-left: 0;
       }
+
+      &:hover {
+        color: #000;
+      }
     }
   }
 

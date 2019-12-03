@@ -43,17 +43,19 @@ export default function Student() {
     history.push(`students/${id}`);
   }
 
-  async function handleStudentRemove(id) {
+  async function handleStudentRemove(student_id) {
     if (window.confirm('Are you sure you wanna remove this student?')) {
       try {
-        await api.delete(`students/${id}`);
-        const newStudents = students.filter(student => student.id !== id);
+        await api.delete(`students/${student_id}`);
+        const newStudents = students.filter(
+          student => student.id !== student_id
+        );
         setStudents(newStudents);
         toast.success('Student removed successfully.');
         // console.log(studentsData);
       } catch (error) {
         toast.error('An error occurred. Plase, try again later.');
-        // console.log(error);
+        console.log(error);
       }
     }
   }
