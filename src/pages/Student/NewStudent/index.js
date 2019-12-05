@@ -1,6 +1,8 @@
 import React from 'react';
 import { MdArrowBack, MdSave } from 'react-icons/md';
 import { Form, Input } from '@rocketseat/unform';
+import * as Yup from 'yup';
+import { toast } from 'react-toastify';
 import {
   Container,
   FormHeader,
@@ -10,18 +12,50 @@ import {
   SaveButton,
   BodyInfo,
 } from './styles';
+import api from '~/services/api';
+import history from '~/services/history';
 
 export default function NewStudent() {
-  function handleStudentData(data) {
-    console.log(data);
+  const schema = Yup.object().shape({
+    name: Yup.string().required('Name is required'),
+    email: Yup.string()
+      .email()
+      .required('Email is required'),
+    age: Yup.number()
+      .integer()
+      .required('Age is required')
+      .typeError('Age is required'),
+    weight: Yup.number('Weight is required')
+      .required('Weight is required')
+      .typeError('Weight is required'),
+    height: Yup.number('Height is required')
+      .required('Height is required')
+      .typeError('Height is required'),
+  });
+
+  async function insertStudent(data) {
+    try {
+      await api.post('students', data);
+      toast.success('A new student has been added!');
+      history.push('/');
+    } catch (error) {
+      console.tron.log(error);
+      toast.error(error);
+    }
+    console.tron.log(data);
   }
+
+  function goBack() {
+    history.push('/');
+  }
+
   return (
     <Container>
-      <Form onSubmit={handleStudentData}>
+      <Form schema={schema} onSubmit={insertStudent}>
         <FormHeader>
           <span>Add Student</span>
           <ButtonArea>
-            <BackButton type="button" onClick={() => {}}>
+            <BackButton type="button" onClick={goBack}>
               <MdArrowBack size={16} />
               <span>Back</span>
             </BackButton>
@@ -32,21 +66,21 @@ export default function NewStudent() {
           </ButtonArea>
         </FormHeader>
         <FormContent>
-          <span>Full name</span>
+          <strong>Full name</strong>
           <Input name="name" type="text" placeholder="John Doe" />
-          <span>E-mail address</span>
+          <strong>E-mail address</strong>
           <Input name="email" type="email" placeholder="example@email.com" />
           <BodyInfo>
             <div>
-              <span>Age</span>
+              <strong>Age</strong>
               <Input name="age" type="number" />
             </div>
             <div>
-              <span>Weight (in kg)</span>
+              <strong>Weight (in kg)</strong>
               <Input name="weight" type="text" />
             </div>
             <div>
-              <span>Height (in m)</span>
+              <strong>Height (in m)</strong>
               <Input name="height" type="text" />
             </div>
           </BodyInfo>

@@ -28,10 +28,14 @@ export const FormContent = styled.div`
   display: flex;
   flex-direction: column;
 
-  span {
+  strong {
     text-transform: uppercase;
     font-weight: bold;
     margin-top: 15px;
+  }
+
+  span {
+    color: #ee4d64;
   }
 
   input {
