@@ -12,6 +12,7 @@ import {
   Table,
   Edit,
   Remove,
+  NoStudentArea,
 } from './styles';
 
 export default function Student() {
@@ -25,7 +26,7 @@ export default function Student() {
       });
       const studentsData = response.data;
       setStudents(studentsData);
-      // console.log(studentsData);
+      console.tron.log(studentsData);
     }
     loadStudents();
   }, [name]);
@@ -55,7 +56,7 @@ export default function Student() {
         // console.log(studentsData);
       } catch (error) {
         toast.error('An error occurred. Plase, try again later.');
-        console.log(error);
+        console.tron.log(error);
       }
     }
   }
@@ -117,9 +118,9 @@ export default function Student() {
           </tbody>
         </Table>
       ) : (
-        <div>
+        <NoStudentArea>
           <h1>No students found</h1>
-        </div>
+        </NoStudentArea>
       )}
     </Container>
   );

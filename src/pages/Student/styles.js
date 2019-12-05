@@ -99,3 +99,13 @@ export const Remove = styled.button`
   background: none;
   border: none;
 `;
+
+export const NoStudentArea = styled.div`
+  background-color: #fff;
+  width: 100%;
+  margin: 20px auto;
+  border-radius: 4px;
+  padding: 20px;
+  text-align: center;
+  color: #999;
+`;
