@@ -40,7 +40,7 @@ export default function Student() {
   }
 
   function handleStudentEdit(id) {
-    // console.log(`Edit student ${id}`);
+    // console.tron.log(`Edit student ${id}`);
     history.push(`students/${id}`);
   }
 
@@ -53,7 +53,7 @@ export default function Student() {
         );
         setStudents(newStudents);
         toast.success('Student removed successfully.');
-        // console.log(studentsData);
+        // console.tron.log(studentsData);
       } catch (error) {
         toast.error('An error occurred. Plase, try again later.');
         console.tron.log(error);
