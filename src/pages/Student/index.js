@@ -10,8 +10,8 @@ import {
   AddButton,
   SearchField,
   Table,
-  Edit,
-  Remove,
+  EditButton,
+  RemoveButton,
   NoStudentArea,
 } from './styles';
 
@@ -98,20 +98,20 @@ export default function Student() {
                 <td>{student.email}</td>
                 <td>{student.age}</td>
                 <td id="options">
-                  <Edit
+                  <EditButton
                     type="button"
                     onClick={() => handleStudentEdit(student.id)}
                   >
                     edit
-                  </Edit>
-                  <Remove
+                  </EditButton>
+                  <RemoveButton
                     type="button"
                     onClick={() => {
                       handleStudentRemove(student.id);
                     }}
                   >
                     remove
-                  </Remove>
+                  </RemoveButton>
                 </td>
               </tr>
             ))}

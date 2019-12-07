@@ -32,7 +32,7 @@ export default function Student() {
       console.tron.log(plansData);
     }
     loadStudents();
-  });
+  }, []);
 
   function handleAddPlan() {
     history.push('plans/new');
@@ -46,7 +46,7 @@ export default function Student() {
   async function handlePlanRemove(plan_id) {
     if (window.confirm('Are you sure you wanna remove this plan?')) {
       try {
-        await api.delete(`plan/${plan_id}`);
+        await api.delete(`plans/${plan_id}`);
         const newPlans = plans.filter(plan => plan.id !== plan_id);
         setPlans(newPlans);
         toast.success('Plan removed successfully.');

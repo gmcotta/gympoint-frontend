@@ -86,14 +86,14 @@ export const Table = styled.table`
   }
 `;
 
-export const Edit = styled.button`
+export const EditButton = styled.button`
   color: #4d85ee;
   margin-left: 25px;
   background: none;
   border: none;
 `;
 
-export const Remove = styled.button`
+export const RemoveButton = styled.button`
   color: #de3b3b;
   margin-left: 25px;
   background: none;

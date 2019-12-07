@@ -24,9 +24,9 @@ export default function EditStudent() {
     async function loadStudents() {
       const response = await api.get('students');
       const studentsData = response.data;
-      console.log(studentsData);
+      console.tron.log(studentsData);
       const currentStudent = studentsData.find(s => s.id === Number(id));
-      console.log(currentStudent);
+      console.tron.log(currentStudent);
 
       setStudent(currentStudent);
     }
