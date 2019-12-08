@@ -78,15 +78,18 @@ export default function EditPlan() {
   }
 
   async function updatePlan(data) {
+    const newData = {
+      ...data,
+      price: plan.price,
+    };
     try {
-      await api.put(`plans/${id}`, plan);
+      await api.put(`plans/${id}`, newData);
       toast.success('The plan has been updated!');
       history.push('/plans');
     } catch (error) {
       console.tron.log(error);
       toast.error(error);
     }
-    // console.tron.log(data);
   }
 
   function goBack() {

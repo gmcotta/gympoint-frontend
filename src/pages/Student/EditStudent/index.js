@@ -51,10 +51,8 @@ export default function EditStudent() {
       toast.success('The student has been updated!');
       history.push('/students');
     } catch (error) {
-      console.tron.log(error);
-      toast.error(error);
+      toast.error('An error occurred. Please, try again later.');
     }
-    console.tron.log(data);
   }
 
   function goBack() {
