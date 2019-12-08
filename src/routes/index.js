@@ -3,12 +3,15 @@ import { Switch } from 'react-router-dom';
 import Route from './Route';
 
 import Login from '~/pages/Login';
+
 import Student from '~/pages/Student';
 import NewStudent from '~/pages/Student/NewStudent';
 import EditStudent from '~/pages/Student/EditStudent';
+
 import Plan from '~/pages/Plan';
 import NewPlan from '~/pages/Plan/NewPlan';
 import EditPlan from '~/pages/Plan/EditPlan';
+
 import Enrollment from '~/pages/Enrollment';
 import HelpOrder from '~/pages/HelpOrder';
 

@@ -62,10 +62,11 @@ export const PlanInfo = styled.div`
 
   input {
     width: 270px;
+    border: 1px solid #ddd;
   }
 
   input.disabled {
-    background-color: #ddd;
+    background-color: #f5f5f5;
   }
 `;
 

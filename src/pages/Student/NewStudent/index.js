@@ -37,7 +37,7 @@ export default function NewStudent() {
     try {
       await api.post('students', data);
       toast.success('A new student has been added!');
-      history.push('/');
+      history.push('/students');
     } catch (error) {
       console.tron.log(error);
       toast.error(error);
@@ -46,7 +46,7 @@ export default function NewStudent() {
   }
 
   function goBack() {
-    history.push('/');
+    history.push('/students');
   }
 
   return (

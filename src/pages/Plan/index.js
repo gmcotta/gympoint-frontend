@@ -29,7 +29,7 @@ export default function Student() {
         priceFormatted: formatPrice(plan.price),
       }));
       setPlans(plansData);
-      console.tron.log(plansData);
+      // console.tron.log(plansData);
     }
     loadStudents();
   }, []);

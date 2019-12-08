@@ -34,18 +34,22 @@ export default function EditStudent() {
   }, [id]);
 
   const schema = Yup.object().shape({
-    name: Yup.string(),
-    email: Yup.string().email(),
-    age: Yup.number().integer(),
-    weight: Yup.number(),
-    height: Yup.number(),
+    name: Yup.string().typeError('Please, type a valid value.'),
+    email: Yup.string()
+      .email()
+      .typeError('Please, type a valid value.'),
+    age: Yup.number()
+      .integer()
+      .typeError('Please, type a valid value.'),
+    weight: Yup.number().typeError('Please, type a valid value.'),
+    height: Yup.number().typeError('Please, type a valid value.'),
   });
 
   async function updateStudent(data) {
     try {
       await api.put(`students/${id}`, data);
       toast.success('The student has been updated!');
-      history.push('/');
+      history.push('/students');
     } catch (error) {
       console.tron.log(error);
       toast.error(error);
@@ -54,7 +58,7 @@ export default function EditStudent() {
   }
 
   function goBack() {
-    history.push('/');
+    history.push('/students');
   }
 
   return (
