@@ -27,7 +27,6 @@ export default function Enrollment() {
         formattedStartDate: format(parseISO(e.start_date), "MMMM' 'd', 'yyyy"),
         formattedEndDate: format(parseISO(e.end_date), "MMMM' 'd', 'yyyy"),
       }));
-      console.log(newEnrollment);
       setEnrollments(newEnrollment);
     }
     loadEnrollments();

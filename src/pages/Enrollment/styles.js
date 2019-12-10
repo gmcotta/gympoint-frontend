@@ -29,7 +29,6 @@ export const AddButton = styled.button`
   align-items: center;
   max-height: 36px;
   padding: 10px;
-  margin-right: 16px;
   border: none;
   border-radius: 4px;
   background-color: #ee4d64;

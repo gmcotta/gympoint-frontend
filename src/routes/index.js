@@ -13,7 +13,9 @@ import NewPlan from '~/pages/Plan/NewPlan';
 import EditPlan from '~/pages/Plan/EditPlan';
 
 import Enrollment from '~/pages/Enrollment';
+
 import HelpOrder from '~/pages/HelpOrder';
+import NewEnrollment from '~/pages/Enrollment/NewEnrollment';
 
 export default function Routes() {
   return (
@@ -29,6 +31,13 @@ export default function Routes() {
       <Route path="/plans/:id" exact component={EditPlan} isPrivate />
 
       <Route path="/enrollments" exact component={Enrollment} isPrivate />
+      <Route
+        path="/enrollments/new"
+        exact
+        component={NewEnrollment}
+        isPrivate
+      />
+
       <Route path="/help-orders" exact component={HelpOrder} isPrivate />
 
       <Route path="/" component={() => <h1>404</h1>} />
