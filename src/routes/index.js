@@ -13,9 +13,9 @@ import NewPlan from '~/pages/Plan/NewPlan';
 import EditPlan from '~/pages/Plan/EditPlan';
 
 import Enrollment from '~/pages/Enrollment';
+import NewEnrollment from '~/pages/Enrollment/NewEnrollment';
 
 import HelpOrder from '~/pages/HelpOrder';
-import NewEnrollment from '~/pages/Enrollment/NewEnrollment';
 
 export default function Routes() {
   return (
