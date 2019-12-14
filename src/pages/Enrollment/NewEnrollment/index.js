@@ -1,178 +1,117 @@
 import React, { useState, useEffect } from 'react';
-import { MdArrowBack, MdSave } from 'react-icons/md';
 import { Form, Input } from '@rocketseat/unform';
-import Select from 'react-select';
 import * as Yup from 'yup';
-import { parseISO, format, addMonths } from 'date-fns';
-import { toast } from 'react-toastify';
-import {
-  Container,
-  FormHeader,
-  FormContent,
-  ButtonArea,
-  BackButton,
-  SaveButton,
-  EnrollmentInfo,
-} from './styles';
+import { addMonths, format } from 'date-fns';
+import AsyncSelectField from '~/components/AsyncSelectField';
+import SelectField from '~/components/SelectField';
+import DatepickerField from '~/components/DatepickerField';
+
 import api from '~/services/api';
-import history from '~/services/history';
 import { formatPrice } from '~/util/format';
 
-export default function NewEnrollment() {
-  const [students, setStudents] = useState([]);
-  const [selectedStudent, setSelectedStudent] = useState(null);
-  const [plans, setPlans] = useState([]);
-  const [selectedPlan, setSelectedPlan] = useState(null);
-
-  const [startDate, setStartDate] = useState(null);
-  const [enrollment, setEnrollment] = useState({
-    end_date: null,
-    totalPrice: null,
-  });
-
+export default function Teste() {
   const schema = Yup.object().shape({
+    student: Yup.object()
+      .shape({
+        value: Yup.number().integer(),
+      })
+      .typeError('Valor inválido')
+      .required('Aluno obrigatório'),
+    plan: Yup.object()
+      .shape({
+        value: Yup.number().integer(),
+      })
+      .typeError('Valor inválido')
+      .required('Aluno obrigatório'),
     start_date: Yup.date()
-      .required()
-      .typeError('Please, choose a valid value'),
+      .typeError('Valor inválido')
+      .required('Data obrigatória'),
   });
+
+  const [enrollment, setEnrollment] = useState({});
+  const [plans, setPlans] = useState([]);
 
   useEffect(() => {
-    async function loadStudents() {
-      const studentResponse = await api.get('students');
-      const studentData = studentResponse.data.map(s => ({
-        value: s.id,
-        label: s.name,
-      }));
-      setStudents(studentData);
-    }
     async function loadPlans() {
-      const planResponse = await api.get('plans');
-      const planData = planResponse.data.map(p => ({
-        value: p.id,
+      const { data: response } = await api.get('plans');
+      const planData = response.map(p => ({
         label: p.title,
+        value: p.id,
+        duration: p.duration,
+        price: p.price,
       }));
       setPlans(planData);
     }
-    loadStudents();
     loadPlans();
   }, []);
 
-  async function insertEnrollment(data) {
-    console.log(data);
-    /*
-    try {
-      await api.post('enrollments', data);
-      toast.success('A new enrollment has been added!');
-      history.push('/enrollments');
-    } catch (error) {
-      console.tron.log(error);
-      toast.error(error);
-    }
-    console.tron.log(data);
-    */
-  }
+  const handleSelectOptions = async inputValue => {
+    const { data: response } = await api.get('students');
+    const studentData = response.map(s => ({
+      label: s.name,
+      value: s.id,
+    }));
+    return studentData.filter(i =>
+      i.label.toLowerCase().includes(inputValue.toLowerCase())
+    );
+  };
 
-  function goBack() {
-    history.push('/enrollments');
-  }
+  const loadStudentOptions = inputValue =>
+    new Promise(resolve => {
+      resolve(handleSelectOptions(inputValue));
+    });
 
-  function handleStudentChange(e) {
-    setSelectedStudent(e);
-  }
-
-  async function handlePlanChange(e) {
-    setSelectedPlan(e);
-    const planResponse = await api.get('plans');
-    const currentPlan = planResponse.data.find(p => p.id === e.value);
+  function handlePlanOption(plan) {
     setEnrollment({
       ...enrollment,
-      totalPrice: formatPrice(currentPlan.price),
-      end_date: startDate
-        ? format(
-            addMonths(parseISO(startDate), currentPlan.duration),
-            'dd/MM/yyyy'
-          )
-        : enrollment.end_date,
+      plan_id: plan.value,
+      duration: plan.duration,
+      end_date: enrollment.start_date
+        ? format(addMonths(enrollment.start_date, plan.duration), 'MM/dd/yyyy')
+        : null,
+      price: formatPrice(plan.duration * plan.price),
     });
   }
 
-  async function handleStartDateChange(e) {
-    setStartDate(e.target.value);
-    console.log(selectedPlan);
+  function handleStartDateChange(date) {
+    setEnrollment({
+      ...enrollment,
+      start_date: date,
+      end_date: enrollment.duration
+        ? format(addMonths(date, enrollment.duration), 'MM/dd/yyyy')
+        : null,
+    });
+  }
+
+  function insertEnrollment(data) {
+    console.log(data);
+    // const student_id = data.student.value;
+    // const plan_id = data.plan.value;
   }
 
   return (
-    <Container>
-      <Form
-        schema={schema}
-        initialData={enrollment}
-        onSubmit={insertEnrollment}
-      >
-        <FormHeader>
-          <span>Add Enrollment</span>
-          <ButtonArea>
-            <BackButton type="button" onClick={goBack}>
-              <MdArrowBack size={16} />
-              <span>Back</span>
-            </BackButton>
-            <SaveButton type="submit">
-              <MdSave size={16} />
-              <span>Save</span>
-            </SaveButton>
-          </ButtonArea>
-        </FormHeader>
-        <FormContent>
-          <strong>Student</strong>
-          <Select
-            name="student"
-            className="studentSelect"
-            value={selectedStudent}
-            onChange={handleStudentChange}
-            placeholder="Select a student"
-            options={students}
-          />
-          <EnrollmentInfo>
-            <div>
-              <strong>Plan</strong>
-              <Select
-                name="plan"
-                className="planSelect"
-                value={selectedPlan}
-                onChange={handlePlanChange}
-                placeholder="Select a plan"
-                options={plans}
-              />
-            </div>
-            <div>
-              <strong>Start Date</strong>
-              <Input
-                name="start_date"
-                type="date"
-                onChange={handleStartDateChange}
-                placeholder="Select date"
-              />
-            </div>
-            <div>
-              <strong>End Date</strong>
-              <Input
-                className="disabled"
-                name="end_date"
-                type="text"
-                disabled
-              />
-            </div>
-            <div>
-              <strong>Total price</strong>
-              <Input
-                className="disabled"
-                name="totalPrice"
-                type="text"
-                disabled
-              />
-            </div>
-          </EnrollmentInfo>
-        </FormContent>
-      </Form>
-    </Container>
+    <Form schema={schema} initialData={enrollment} onSubmit={insertEnrollment}>
+      <AsyncSelectField
+        name="student"
+        loadOptions={loadStudentOptions}
+        placeholder="Select a student..."
+      />
+      <SelectField
+        name="plan"
+        options={plans}
+        onChange={handlePlanOption}
+        placeholder="Select a plan..."
+      />
+      <DatepickerField
+        name="start_date"
+        selected={enrollment.start_date}
+        onChange={handleStartDateChange}
+        placeholderText="Select a date..."
+      />
+      <Input disabled name="end_date" type="text" />
+      <Input disabled name="price" type="text" />
+
+      <button type="submit">Salvar</button>
+    </Form>
   );
 }
