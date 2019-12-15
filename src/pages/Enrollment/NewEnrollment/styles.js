@@ -41,6 +41,25 @@ export const FormContent = styled.div`
   span {
     color: #ee4d64;
   }
+
+  .studentPicker__control {
+    height: 45px;
+  }
+
+  .planPicker__control {
+    height: 45px;
+    width: 200px;
+  }
+
+  .planPicker__placeholder {
+    position: relative;
+    top: 5px;
+  }
+
+  .planPicker__indicators {
+    position: relative;
+    top: -2px;
+  }
 `;
 
 export const EnrollmentInfo = styled.div`
@@ -105,7 +124,11 @@ export const SaveButton = styled.button`
   }
 `;
 
-export const StudentPicker = styled(AsyncSelectField)``;
+export const StudentPicker = styled(AsyncSelectField)`
+  div.studentPicker {
+    border: 1px solid red;
+  }
+`;
 
 export const PlanPicker = styled(SelectField)``;
 

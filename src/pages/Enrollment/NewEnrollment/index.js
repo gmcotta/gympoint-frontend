@@ -140,6 +140,7 @@ export default function NewEnrollment() {
             name="student"
             loadOptions={loadStudentOptions}
             placeholder="Select a student..."
+            classNamePrefix="studentPicker"
           />
           <EnrollmentInfo>
             <section>
@@ -149,6 +150,7 @@ export default function NewEnrollment() {
                 options={plans}
                 onChange={handlePlanOption}
                 placeholder="Select a plan..."
+                classNamePrefix="planPicker"
               />
             </section>
             <section>
