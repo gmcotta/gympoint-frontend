@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 
 export default function DatepickerField({ name, ...rest }) {
   const ref = useRef(null);
-  const { fieldName, registerField } = useField(name);
+  const { fieldName, registerField, error } = useField(name);
 
   useEffect(() => {
     registerField({
@@ -20,14 +20,15 @@ export default function DatepickerField({ name, ...rest }) {
   }, [ref.current, fieldName]); // eslint-disable-line
 
   return (
-    <>
+    <div>
       <ReactDatePicker
         name={fieldName}
         dateFormat="MM/dd/yyyy"
         ref={ref}
         {...rest}
       />
-    </>
+      {error && <span>{error}</span>}
+    </div>
   );
 }
 

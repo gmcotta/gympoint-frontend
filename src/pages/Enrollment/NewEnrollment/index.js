@@ -2,30 +2,42 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input } from '@rocketseat/unform';
 import * as Yup from 'yup';
 import { addMonths, format } from 'date-fns';
-import AsyncSelectField from '~/components/AsyncSelectField';
-import SelectField from '~/components/SelectField';
-import DatepickerField from '~/components/DatepickerField';
+import { MdArrowBack, MdSave } from 'react-icons/md';
+import { toast } from 'react-toastify';
+import {
+  Container,
+  FormHeader,
+  ButtonArea,
+  BackButton,
+  SaveButton,
+  FormContent,
+  EnrollmentInfo,
+  StudentPicker,
+  PlanPicker,
+  DatePicker,
+} from './styles';
 
 import api from '~/services/api';
+import history from '~/services/history';
 import { formatPrice } from '~/util/format';
 
-export default function Teste() {
+export default function NewEnrollment() {
   const schema = Yup.object().shape({
     student: Yup.object()
       .shape({
         value: Yup.number().integer(),
       })
-      .typeError('Valor inválido')
-      .required('Aluno obrigatório'),
+      .typeError('Please, select a valid value.')
+      .required('Please, select a valid value.'),
     plan: Yup.object()
       .shape({
         value: Yup.number().integer(),
       })
-      .typeError('Valor inválido')
-      .required('Aluno obrigatório'),
+      .typeError('Please, select a valid value.')
+      .required('Please, select a valid value.'),
     start_date: Yup.date()
-      .typeError('Valor inválido')
-      .required('Data obrigatória'),
+      .typeError('Please, select a valid value.')
+      .required('Please, select a valid value.'),
   });
 
   const [enrollment, setEnrollment] = useState({});
@@ -83,35 +95,82 @@ export default function Teste() {
     });
   }
 
-  function insertEnrollment(data) {
-    console.log(data);
-    // const student_id = data.student.value;
-    // const plan_id = data.plan.value;
+  function goBack() {
+    history.push('/enrollments');
+  }
+
+  async function insertEnrollment(data) {
+    const newData = {
+      student_id: data.student.value,
+      plan_id: data.plan.value,
+      start_date: data.start_date,
+    };
+    try {
+      await api.post('enrollments', newData);
+      toast.success('A new enrollment has been added!');
+      history.push('/enrollments');
+    } catch (error) {
+      toast.error('An error occurred. Please, try again later.');
+    }
   }
 
   return (
-    <Form schema={schema} initialData={enrollment} onSubmit={insertEnrollment}>
-      <AsyncSelectField
-        name="student"
-        loadOptions={loadStudentOptions}
-        placeholder="Select a student..."
-      />
-      <SelectField
-        name="plan"
-        options={plans}
-        onChange={handlePlanOption}
-        placeholder="Select a plan..."
-      />
-      <DatepickerField
-        name="start_date"
-        selected={enrollment.start_date}
-        onChange={handleStartDateChange}
-        placeholderText="Select a date..."
-      />
-      <Input disabled name="end_date" type="text" />
-      <Input disabled name="price" type="text" />
-
-      <button type="submit">Salvar</button>
-    </Form>
+    <Container>
+      <Form
+        schema={schema}
+        initialData={enrollment}
+        onSubmit={insertEnrollment}
+      >
+        <FormHeader>
+          <span>New Enrollment</span>
+          <ButtonArea>
+            <BackButton type="button" onClick={goBack}>
+              <MdArrowBack size={16} />
+              <span>Back</span>
+            </BackButton>
+            <SaveButton type="submit">
+              <MdSave size={16} />
+              <span>Save</span>
+            </SaveButton>
+          </ButtonArea>
+        </FormHeader>
+        <FormContent>
+          <strong>Student</strong>
+          <StudentPicker
+            name="student"
+            loadOptions={loadStudentOptions}
+            placeholder="Select a student..."
+          />
+          <EnrollmentInfo>
+            <section>
+              <strong>Plan</strong>
+              <PlanPicker
+                name="plan"
+                options={plans}
+                onChange={handlePlanOption}
+                placeholder="Select a plan..."
+              />
+            </section>
+            <section>
+              <strong>Start date</strong>
+              <DatePicker
+                name="start_date"
+                selected={enrollment.start_date}
+                onChange={handleStartDateChange}
+                placeholderText="Select a date..."
+              />
+            </section>
+            <section>
+              <strong>End date</strong>
+              <Input disabled name="end_date" type="text" />
+            </section>
+            <section>
+              <strong>Total price</strong>
+              <Input disabled name="price" type="text" />
+            </section>
+          </EnrollmentInfo>
+        </FormContent>
+      </Form>
+    </Container>
   );
 }

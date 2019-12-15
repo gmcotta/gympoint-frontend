@@ -14,6 +14,7 @@ import EditPlan from '~/pages/Plan/EditPlan';
 
 import Enrollment from '~/pages/Enrollment';
 import NewEnrollment from '~/pages/Enrollment/NewEnrollment';
+import EditEnrollment from '~/pages/Enrollment/EditEnrollment';
 
 import HelpOrder from '~/pages/HelpOrder';
 
@@ -35,6 +36,12 @@ export default function Routes() {
         path="/enrollments/new"
         exact
         component={NewEnrollment}
+        isPrivate
+      />
+      <Route
+        path="/enrollments/:id"
+        exact
+        component={EditEnrollment}
         isPrivate
       />
 

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 export default function AsyncSelectField({ name, ...rest }) {
   const ref = useRef(null);
-  const { fieldName, registerField } = useField(name);
+  const { fieldName, registerField, error } = useField(name);
 
   function parseSelectValue(selectRef) {
     return selectRef.select.state.value;
@@ -24,7 +24,7 @@ export default function AsyncSelectField({ name, ...rest }) {
   }, [ref.current, fieldName]); // eslint-disable-line
 
   return (
-    <>
+    <div>
       <AsyncSelect
         name={fieldName}
         cacheOptions
@@ -32,7 +32,8 @@ export default function AsyncSelectField({ name, ...rest }) {
         ref={ref}
         {...rest}
       />
-    </>
+      {error && <span>{error}</span>}
+    </div>
   );
 }
 
