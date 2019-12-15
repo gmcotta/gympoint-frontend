@@ -1,8 +1,4 @@
 import styled from 'styled-components';
-import SelectField from '~/components/SelectField';
-import DatepickerField from '~/components/DatepickerField';
-import AsyncSelectField from '~/components/AsyncSelectField';
-import 'react-datepicker/dist/react-datepicker.css';
 
 export const Container = styled.div`
   max-width: 960px;
@@ -123,13 +119,3 @@ export const SaveButton = styled.button`
     margin-left: 7px;
   }
 `;
-
-export const StudentPicker = styled(AsyncSelectField)`
-  div.studentPicker {
-    border: 1px solid red;
-  }
-`;
-
-export const PlanPicker = styled(SelectField)``;
-
-export const DatePicker = styled(DatepickerField)``;

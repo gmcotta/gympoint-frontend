@@ -13,10 +13,12 @@ import {
   SaveButton,
   FormContent,
   EnrollmentInfo,
-  StudentPicker,
-  PlanPicker,
-  DatePicker,
 } from './styles';
+
+import SelectField from '~/components/SelectField';
+import DatepickerField from '~/components/DatepickerField';
+import AsyncSelectField from '~/components/AsyncSelectField';
+import 'react-datepicker/dist/react-datepicker.css';
 
 import api from '~/services/api';
 import history from '~/services/history';
@@ -39,7 +41,25 @@ export default function NewEnrollment() {
 
   const [enrollment, setEnrollment] = useState({});
   const [plans, setPlans] = useState([]);
+  const [students, setStudents] = useState([]);
   const { id } = useParams();
+
+  useEffect(() => {
+    async function loadEnrollment() {
+      const { data: response } = await api.get(`enrollments/${id}`);
+      setEnrollment({
+        student: response.student,
+        plan: response.plan,
+        start_date: parseISO(response.start_date),
+        end_date: format(
+          addMonths(parseISO(response.start_date), response.Plan.duration),
+          'MM/dd/yyyy'
+        ),
+        price: formatPrice(response.price * response.Plan.duration),
+      });
+    }
+    loadEnrollment();
+  }, [id]);
 
   useEffect(() => {
     async function loadPlans() {
@@ -52,20 +72,8 @@ export default function NewEnrollment() {
       }));
       setPlans(planData);
     }
-
-    async function loadEnrollment() {
-      const { data: response } = await api.get('enrollments');
-      const currentEnrollment = response.filter(e => e.id === Number(id));
-      const formattedEnrollment = currentEnrollment.map(e => ({
-        student: e.student_id,
-        plan: e.plan_id,
-        start_date: parseISO(e.start_date),
-      }));
-      setEnrollment(formattedEnrollment);
-    }
     loadPlans();
-    loadEnrollment();
-  }, [id]);
+  }, []);
 
   const handleSelectOptions = async inputValue => {
     const { data: response } = await api.get('students');
@@ -73,6 +81,8 @@ export default function NewEnrollment() {
       label: s.name,
       value: s.id,
     }));
+    // plans.filter(({ value }) => value === enrollment.plan);
+    setStudents(studentData);
     return studentData.filter(i =>
       i.label.toLowerCase().includes(inputValue.toLowerCase())
     );
@@ -83,10 +93,17 @@ export default function NewEnrollment() {
       resolve(handleSelectOptions(inputValue));
     });
 
+  function handleStudentOption(student) {
+    setEnrollment({
+      ...enrollment,
+      student: student.value,
+    });
+  }
+
   function handlePlanOption(plan) {
     setEnrollment({
       ...enrollment,
-      plan_id: plan.value,
+      plan: plan.value,
       duration: plan.duration,
       end_date: enrollment.start_date
         ? format(addMonths(enrollment.start_date, plan.duration), 'MM/dd/yyyy')
@@ -110,6 +127,8 @@ export default function NewEnrollment() {
   }
 
   async function updateEnrollment(data) {
+    console.log(data);
+    /*
     const newData = {
       student_id: data.student.value,
       plan_id: data.plan.value,
@@ -122,6 +141,7 @@ export default function NewEnrollment() {
     } catch (error) {
       toast.error('An error occurred. Please, try again later.');
     }
+    */
   }
 
   return (
@@ -146,18 +166,22 @@ export default function NewEnrollment() {
         </FormHeader>
         <FormContent>
           <strong>Student</strong>
-          <StudentPicker
+          <AsyncSelectField
             name="student"
             loadOptions={loadStudentOptions}
+            value={students.filter(({ value }) => value === enrollment.student)}
+            onChange={handleStudentOption}
             placeholder="Select a student..."
             classNamePrefix="studentPicker"
+            isDisabled
           />
           <EnrollmentInfo>
             <section>
               <strong>Plan</strong>
-              <PlanPicker
+              <SelectField
                 name="plan"
                 options={plans}
+                value={plans.filter(({ value }) => value === enrollment.plan)}
                 onChange={handlePlanOption}
                 placeholder="Select a plan..."
                 classNamePrefix="planPicker"
@@ -165,7 +189,7 @@ export default function NewEnrollment() {
             </section>
             <section>
               <strong>Start date</strong>
-              <DatePicker
+              <DatepickerField
                 name="start_date"
                 selected={enrollment.start_date}
                 onChange={handleStartDateChange}

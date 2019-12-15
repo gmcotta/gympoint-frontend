@@ -12,10 +12,12 @@ import {
   SaveButton,
   FormContent,
   EnrollmentInfo,
-  StudentPicker,
-  PlanPicker,
-  DatePicker,
 } from './styles';
+
+import SelectField from '~/components/SelectField';
+import DatepickerField from '~/components/DatepickerField';
+import AsyncSelectField from '~/components/AsyncSelectField';
+import 'react-datepicker/dist/react-datepicker.css';
 
 import api from '~/services/api';
 import history from '~/services/history';
@@ -136,7 +138,7 @@ export default function NewEnrollment() {
         </FormHeader>
         <FormContent>
           <strong>Student</strong>
-          <StudentPicker
+          <AsyncSelectField
             name="student"
             loadOptions={loadStudentOptions}
             placeholder="Select a student..."
@@ -145,7 +147,7 @@ export default function NewEnrollment() {
           <EnrollmentInfo>
             <section>
               <strong>Plan</strong>
-              <PlanPicker
+              <SelectField
                 name="plan"
                 options={plans}
                 onChange={handlePlanOption}
@@ -155,7 +157,7 @@ export default function NewEnrollment() {
             </section>
             <section>
               <strong>Start date</strong>
-              <DatePicker
+              <DatepickerField
                 name="start_date"
                 selected={enrollment.start_date}
                 onChange={handleStartDateChange}
