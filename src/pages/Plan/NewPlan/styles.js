@@ -67,6 +67,7 @@ export const PlanInfo = styled.div`
 
   input.disabled {
     background-color: #f5f5f5;
+    color: #999;
   }
 `;
 

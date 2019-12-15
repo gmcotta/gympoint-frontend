@@ -26,16 +26,6 @@ import { formatPrice } from '~/util/format';
 
 export default function NewEnrollment() {
   const schema = Yup.object().shape({
-    student: Yup.object()
-      .shape({
-        value: Yup.number().integer(),
-      })
-      .typeError('Please, select a valid value.'),
-    plan: Yup.object()
-      .shape({
-        value: Yup.number().integer(),
-      })
-      .typeError('Please, select a valid value.'),
     start_date: Yup.date().typeError('Please, select a valid value.'),
   });
 
@@ -127,11 +117,9 @@ export default function NewEnrollment() {
   }
 
   async function updateEnrollment(data) {
-    console.log(data);
-    /*
     const newData = {
-      student_id: data.student.value,
-      plan_id: data.plan.value,
+      student_id: enrollment.student,
+      plan_id: enrollment.plan,
       start_date: data.start_date,
     };
     try {
@@ -141,7 +129,6 @@ export default function NewEnrollment() {
     } catch (error) {
       toast.error('An error occurred. Please, try again later.');
     }
-    */
   }
 
   return (
@@ -198,11 +185,16 @@ export default function NewEnrollment() {
             </section>
             <section>
               <strong>End date</strong>
-              <Input disabled name="end_date" type="text" />
+              <Input
+                className="disabled"
+                disabled
+                name="end_date"
+                type="text"
+              />
             </section>
             <section>
               <strong>Total price</strong>
-              <Input disabled name="price" type="text" />
+              <Input className="disabled" disabled name="price" type="text" />
             </section>
           </EnrollmentInfo>
         </FormContent>

@@ -166,11 +166,16 @@ export default function NewEnrollment() {
             </section>
             <section>
               <strong>End date</strong>
-              <Input disabled name="end_date" type="text" />
+              <Input
+                className="disabled"
+                disabled
+                name="end_date"
+                type="text"
+              />
             </section>
             <section>
               <strong>Total price</strong>
-              <Input disabled name="price" type="text" />
+              <Input className="disabled" disabled name="price" type="text" />
             </section>
           </EnrollmentInfo>
         </FormContent>
