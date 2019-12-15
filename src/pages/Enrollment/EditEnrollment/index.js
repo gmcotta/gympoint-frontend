@@ -67,8 +67,6 @@ export default function NewEnrollment() {
     loadEnrollment();
   }, [id]);
 
-  console.log(enrollment);
-
   const handleSelectOptions = async inputValue => {
     const { data: response } = await api.get('students');
     const studentData = response.map(s => ({

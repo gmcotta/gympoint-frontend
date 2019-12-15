@@ -25,7 +25,13 @@ export default function AsyncSelectField({ name, ...rest }) {
 
   return (
     <div>
-      <Select name={fieldName} ref={ref} className="selectField" {...rest} />
+      <Select
+        name={fieldName}
+        ref={ref}
+        className="selectField"
+        isSearchable={false}
+        {...rest}
+      />
       {error && <span>{error}</span>}
     </div>
   );

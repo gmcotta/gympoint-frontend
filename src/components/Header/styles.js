@@ -36,6 +36,9 @@ export const Content = styled.div`
         color: #000;
       }
     }
+    a.selected {
+      color: #000;
+    }
   }
 
   aside {
@@ -45,8 +48,11 @@ export const Content = styled.div`
     strong {
       color: #666;
     }
-    a {
-      color: #de3b3b;
-    }
+  }
+
+  button {
+    background-color: none;
+    border: none;
+    color: #de3b3b;
   }
 `;

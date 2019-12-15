@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useField } from '@rocketseat/unform';
@@ -6,7 +6,8 @@ import PropTypes from 'prop-types';
 
 export default function DatepickerField({ name, ...rest }) {
   const ref = useRef(null);
-  const { fieldName, registerField, error } = useField(name);
+  const { fieldName, registerField, defaultValue, error } = useField(name);
+  const [selected, setSelected] = useState(defaultValue);
 
   useEffect(() => {
     registerField({
@@ -25,6 +26,8 @@ export default function DatepickerField({ name, ...rest }) {
         name={fieldName}
         dateFormat="MM/dd/yyyy"
         ref={ref}
+        selected={selected}
+        onChange={date => setSelected(date)}
         {...rest}
       />
       {error && <span>{error}</span>}
