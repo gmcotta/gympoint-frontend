@@ -37,15 +37,17 @@ export default function NewEnrollment() {
   useEffect(() => {
     async function loadEnrollment() {
       const { data: response } = await api.get(`enrollments/${id}`);
+      console.log(response);
       setEnrollment({
         student: response.student,
         plan: response.plan,
+        duration: response.Plan.duration,
         start_date: parseISO(response.start_date),
         end_date: format(
           addMonths(parseISO(response.start_date), response.Plan.duration),
           'MM/dd/yyyy'
         ),
-        price: formatPrice(response.price * response.Plan.duration),
+        price: formatPrice(response.price),
       });
     }
     loadEnrollment();
@@ -117,10 +119,13 @@ export default function NewEnrollment() {
   }
 
   async function updateEnrollment(data) {
+    console.log(enrollment, data);
     const newData = {
       student_id: enrollment.student,
       plan_id: enrollment.plan,
       start_date: data.start_date,
+      end_date: enrollment.end_date,
+      price: Number(enrollment.price.substr(1)),
     };
     try {
       await api.put(`enrollments/${id}`, newData);

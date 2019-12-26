@@ -24,8 +24,8 @@ export default function Enrollment() {
       const enrollmentsData = response.data.filter(e => e.student_id !== null);
       const newEnrollment = enrollmentsData.map(e => ({
         ...e,
-        formattedStartDate: format(parseISO(e.start_date), "MMMM' 'd', 'yyyy"),
-        formattedEndDate: format(parseISO(e.end_date), "MMMM' 'd', 'yyyy"),
+        formattedStartDate: format(parseISO(e.start_date), "MMMM' 'dd', 'yyyy"),
+        formattedEndDate: format(parseISO(e.end_date), "MMMM' 'dd', 'yyyy"),
       }));
       setEnrollments(newEnrollment);
     }

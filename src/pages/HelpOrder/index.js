@@ -50,7 +50,10 @@ export default function HelpOrder() {
                 trigger={<ViewButton> view </ViewButton>}
                 modal
                 closeOnDocumentClick
-                contentStyle={{ width: '450px' }}
+                contentStyle={{ width: '450px', borderRadius: '4px' }}
+                onClose={() => {
+                  toast.success('Teste');
+                }}
               >
                 {close => (
                   <ModalBody
