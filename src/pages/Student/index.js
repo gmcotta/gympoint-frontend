@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MdAdd, MdSearch } from 'react-icons/md';
 import { toast } from 'react-toastify';
+import SelectField from '~/components/SelectField';
 import api from '~/services/api';
 import history from '~/services/history';
 import {
@@ -13,23 +14,32 @@ import {
   EditButton,
   RemoveButton,
   NoStudentArea,
+  Pagination,
+  PageButtonArea,
+  PageButton,
 } from './styles';
 
 export default function Student() {
+  const pageOptions = [
+    { value: 5, label: '5 items per page' },
+    { value: 10, label: '10 items per page' },
+    { value: 15, label: '15 items per page' },
+  ];
+  const defaultPageOption = pageOptions[0];
   const [students, setStudents] = useState([]);
+  const [perPage, setPerPage] = useState(defaultPageOption.value);
+  const [page, setPage] = useState(1);
   const [name, setName] = useState('');
 
   useEffect(() => {
     async function loadStudents() {
-      const response = await api.get('students', {
-        params: { name },
+      const { data: response } = await api.get('students', {
+        params: { name, page, perPage },
       });
-      const studentsData = response.data;
-      setStudents(studentsData);
-      console.tron.log(studentsData);
+      setStudents(response);
     }
     loadStudents();
-  }, [name]);
+  }, [name, page, perPage]);
 
   function handleAddStudent() {
     history.push('students/new');
@@ -37,6 +47,7 @@ export default function Student() {
 
   function handleStudentName(e) {
     setName(e.target.value);
+    setPage(1);
   }
 
   function handleStudentEdit(id) {
@@ -61,6 +72,20 @@ export default function Student() {
     }
   }
 
+  function handleNextPage() {
+    setPage(page + 1);
+  }
+
+  function handlePrevPage() {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  }
+
+  function handlePageOption(e) {
+    setPerPage(e.value);
+  }
+
   return (
     <Container>
       <TableHeader>
@@ -80,6 +105,33 @@ export default function Student() {
           </SearchField>
         </ButtonArea>
       </TableHeader>
+
+      <Pagination>
+        <PageButtonArea>
+          <PageButton
+            disabled={page === 1}
+            type="button"
+            onClick={handlePrevPage}
+          >
+            Prev Page
+          </PageButton>
+          <span>{page}</span>
+          <PageButton
+            disabled={students.length < perPage}
+            type="button"
+            onClick={handleNextPage}
+          >
+            Next Page
+          </PageButton>
+        </PageButtonArea>
+        <SelectField
+          name="perPage"
+          defaultValue={defaultPageOption}
+          options={pageOptions}
+          onChange={handlePageOption}
+          classNamePrefix="perPagePicker"
+        />
+      </Pagination>
 
       {students.length ? (
         <Table>

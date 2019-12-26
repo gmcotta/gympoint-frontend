@@ -40,11 +40,13 @@ export const FormContent = styled.div`
 
   .studentPicker__control {
     height: 45px;
+    border-color: #ddd;
   }
 
   .planPicker__control {
     height: 45px;
     width: 200px;
+    border-color: #ddd;
   }
 
   .planPicker__placeholder {
