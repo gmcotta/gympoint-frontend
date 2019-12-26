@@ -17,20 +17,23 @@ import api from '~/services/api';
 export default function HelpOrder() {
   const [helpOrders, setHelpOrders] = useState([]);
 
+  async function loadHelpOrder() {
+    const response = await api.get('help-orders');
+    const helpOrderData = response.data;
+    setHelpOrders(helpOrderData);
+  }
+
   useEffect(() => {
-    async function loadHelpOrder() {
-      const response = await api.get('help-orders');
-      const helpOrderData = response.data;
-      setHelpOrders(helpOrderData);
-    }
     loadHelpOrder();
   }, []);
 
   async function handleStudentAnswer(data, id) {
     try {
       await api.post(`help-orders/${id}/answer`, data);
+      loadHelpOrder();
       toast.success('The question has been replied successfully');
     } catch (error) {
+      loadHelpOrder();
       toast.error('An error occurred. Please, try again later.');
     }
   }
@@ -51,16 +54,12 @@ export default function HelpOrder() {
                 modal
                 closeOnDocumentClick
                 contentStyle={{ width: '450px', borderRadius: '4px' }}
-                onClose={() => {
-                  toast.success('Teste');
-                }}
               >
                 {close => (
                   <ModalBody
                     onSubmit={data => {
                       handleStudentAnswer(data, h.id);
                       close();
-                      window.location.reload(false);
                     }}
                   >
                     <strong>Student question</strong>
