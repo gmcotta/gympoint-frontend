@@ -36,6 +36,7 @@ export const FormContent = styled.div`
 
   span {
     color: #ee4d64;
+    max-width: 180px;
   }
 
   .studentPicker__control {

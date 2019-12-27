@@ -38,6 +38,7 @@ export default function NewEnrollment() {
       .typeError('Please, select a valid value.')
       .required('Please, select a valid value.'),
     start_date: Yup.date()
+      .min(new Date(), 'Please, select a valid value.')
       .typeError('Please, select a valid value.')
       .required('Please, select a valid value.'),
   });
@@ -60,12 +61,22 @@ export default function NewEnrollment() {
   }, []);
 
   const handleSelectOptions = async inputValue => {
-    const { data: response } = await api.get('students');
+    const name = '';
+    const { data: response } = await api.get('students', {
+      params: { name },
+    });
     const studentData = response.map(s => ({
       label: s.name,
       value: s.id,
     }));
-    return studentData.filter(i =>
+    const { data: enrollments } = await api.get('enrollments', {
+      params: { name },
+    });
+    const studentsWithEnrollment = enrollments.map(e => e.Student.name);
+    const studentsWithoutEnrollment = studentData.filter(
+      s => !studentsWithEnrollment.includes(s.label)
+    );
+    return studentsWithoutEnrollment.filter(i =>
       i.label.toLowerCase().includes(inputValue.toLowerCase())
     );
   };

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MdAdd, MdCheckCircle } from 'react-icons/md';
 import { parseISO, format } from 'date-fns';
 import { toast } from 'react-toastify';
+import SelectField from '~/components/SelectField';
 import api from '~/services/api';
 import history from '~/services/history';
 import {
@@ -13,24 +14,40 @@ import {
   EditButton,
   RemoveButton,
   NoEnrollmentArea,
+  Pagination,
+  PageButtonArea,
+  PageButton,
 } from './styles';
 
 export default function Enrollment() {
+  const pageOptions = [
+    { value: 5, label: '5 items per page' },
+    { value: 10, label: '10 items per page' },
+    { value: 15, label: '15 items per page' },
+  ];
+  const defaultPageOption = pageOptions[0];
+  const [perPage, setPerPage] = useState(defaultPageOption.value);
+  const [page, setPage] = useState(1);
+  const [allItems, setAllItems] = useState();
   const [enrollments, setEnrollments] = useState([]);
 
   useEffect(() => {
     async function loadEnrollments() {
-      const response = await api.get('enrollments');
-      const enrollmentsData = response.data.filter(e => e.student_id !== null);
-      const newEnrollment = enrollmentsData.map(e => ({
+      const { data: allEnrollments } = await api.get('enrollments');
+      setAllItems(allEnrollments.length);
+
+      const { data: response } = await api.get('enrollments', {
+        params: { page, perPage },
+      });
+      const enrollmentsData = response.map(e => ({
         ...e,
         formattedStartDate: format(parseISO(e.start_date), "MMMM' 'dd', 'yyyy"),
         formattedEndDate: format(parseISO(e.end_date), "MMMM' 'dd', 'yyyy"),
       }));
-      setEnrollments(newEnrollment);
+      setEnrollments(enrollmentsData);
     }
     loadEnrollments();
-  }, []);
+  }, [page, perPage]);
 
   function handleAddEnrollment() {
     history.push('enrollments/new');
@@ -55,6 +72,21 @@ export default function Enrollment() {
     }
   }
 
+  function handleNextPage() {
+    setPage(page + 1);
+  }
+
+  function handlePrevPage() {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  }
+
+  function handlePageOption(e) {
+    setPerPage(e.value);
+    setPage(1);
+  }
+
   return (
     <Container>
       <TableHeader>
@@ -66,6 +98,36 @@ export default function Enrollment() {
           </AddButton>
         </ButtonArea>
       </TableHeader>
+
+      <Pagination>
+        <PageButtonArea>
+          <PageButton
+            disabled={page === 1}
+            type="button"
+            onClick={handlePrevPage}
+          >
+            Prev Page
+          </PageButton>
+          <span>{page}</span>
+          <PageButton
+            disabled={
+              enrollments.length < perPage ||
+              page * enrollments.length === allItems
+            }
+            type="button"
+            onClick={handleNextPage}
+          >
+            Next Page
+          </PageButton>
+        </PageButtonArea>
+        <SelectField
+          name="perPage"
+          defaultValue={defaultPageOption}
+          options={pageOptions}
+          onChange={handlePageOption}
+          classNamePrefix="perPagePicker"
+        />
+      </Pagination>
 
       {enrollments.length ? (
         <Table>
