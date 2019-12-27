@@ -26,13 +26,17 @@ export default function Student() {
     { value: 15, label: '15 items per page' },
   ];
   const defaultPageOption = pageOptions[0];
-  const [students, setStudents] = useState([]);
   const [perPage, setPerPage] = useState(defaultPageOption.value);
   const [page, setPage] = useState(1);
   const [name, setName] = useState('');
+  const [allItems, setAllItems] = useState();
+  const [students, setStudents] = useState([]);
 
   useEffect(() => {
     async function loadStudents() {
+      const { data: allStudents } = await api.get('plans');
+      setAllItems(allStudents.length);
+
       const { data: response } = await api.get('students', {
         params: { name, page, perPage },
       });
@@ -84,6 +88,7 @@ export default function Student() {
 
   function handlePageOption(e) {
     setPerPage(e.value);
+    setPage(1);
   }
 
   return (
@@ -117,7 +122,9 @@ export default function Student() {
           </PageButton>
           <span>{page}</span>
           <PageButton
-            disabled={students.length < perPage}
+            disabled={
+              students.length < perPage || page * students.length === allItems
+            }
             type="button"
             onClick={handleNextPage}
           >
