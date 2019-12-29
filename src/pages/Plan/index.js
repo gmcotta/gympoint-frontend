@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { MdAdd } from 'react-icons/md';
 import { toast } from 'react-toastify';
-import SelectField from '~/components/SelectField';
 import api from '~/services/api';
 import history from '~/services/history';
+import Pagination from '~/components/Pagination';
+import { pageOptions } from '~/components/pageOptions';
+import { formatPrice } from '~/util/format';
 import {
   Container,
   TableHeader,
@@ -13,18 +15,9 @@ import {
   EditButton,
   RemoveButton,
   NoStudentArea,
-  Pagination,
-  PageButtonArea,
-  PageButton,
 } from './styles';
-import { formatPrice } from '~/util/format';
 
 export default function Plan() {
-  const pageOptions = [
-    { value: 5, label: '5 items per page' },
-    { value: 10, label: '10 items per page' },
-    { value: 15, label: '15 items per page' },
-  ];
   const defaultPageOption = pageOptions[0];
   const [perPage, setPerPage] = useState(defaultPageOption.value);
   const [page, setPage] = useState(1);
@@ -48,7 +41,6 @@ export default function Plan() {
         priceFormatted: formatPrice(plan.price),
       }));
       setPlans(plansData);
-      // console.tron.log(plansData);
     }
     loadPlans();
   }, [page, perPage]);
@@ -58,7 +50,6 @@ export default function Plan() {
   }
 
   function handlePlanEdit(id) {
-    // console.tron.log(`Edit student ${id}`);
     history.push(`plans/${id}`);
   }
 
@@ -69,7 +60,6 @@ export default function Plan() {
         const newPlans = plans.filter(plan => plan.id !== plan_id);
         setPlans(newPlans);
         toast.success('Plan removed successfully.');
-        // console.tron.log(studentsData);
       } catch (error) {
         toast.error('An error occurred. Plase, try again later.');
         console.tron.log(error);
@@ -102,34 +92,18 @@ export default function Plan() {
         </AddButton>
       </TableHeader>
 
-      <Pagination>
-        <PageButtonArea>
-          <PageButton
-            disabled={page === 1}
-            type="button"
-            onClick={handlePrevPage}
-          >
-            Prev Page
-          </PageButton>
-          <span>{page}</span>
-          <PageButton
-            disabled={
-              plans.length < perPage || page * plans.length === allItems
-            }
-            type="button"
-            onClick={handleNextPage}
-          >
-            Next Page
-          </PageButton>
-        </PageButtonArea>
-        <SelectField
-          name="perPage"
-          defaultValue={defaultPageOption}
-          options={pageOptions}
-          onChange={handlePageOption}
-          classNamePrefix="perPagePicker"
-        />
-      </Pagination>
+      <Pagination
+        prevButtonDisabled={page === 1}
+        handlePrevPage={handlePrevPage}
+        page={page}
+        nextButtonDisabled={
+          plans.length < perPage || page * plans.length === allItems
+        }
+        handleNextPage={handleNextPage}
+        defaultPageOption={defaultPageOption}
+        pageOptions={pageOptions}
+        handlePageOption={handlePageOption}
+      />
 
       {plans.length ? (
         <TableContainer>

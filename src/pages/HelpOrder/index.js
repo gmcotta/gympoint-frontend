@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Popup from 'reactjs-popup';
 import { Input } from '@rocketseat/unform';
 import { toast } from 'react-toastify';
-import SelectField from '~/components/SelectField';
+import Pagination from '~/components/Pagination';
+import { pageOptions } from '~/components/pageOptions';
 import {
   Container,
   TableHeader,
@@ -11,19 +12,11 @@ import {
   NoHelpOrderArea,
   ModalBody,
   ReplyButton,
-  Pagination,
-  PageButtonArea,
-  PageButton,
 } from './styles';
 
 import api from '~/services/api';
 
 export default function HelpOrder() {
-  const pageOptions = [
-    { value: 5, label: '5 items per page' },
-    { value: 10, label: '10 items per page' },
-    { value: 15, label: '15 items per page' },
-  ];
   const defaultPageOption = pageOptions[0];
   const [perPage, setPerPage] = useState(defaultPageOption.value);
   const [page, setPage] = useState(1);
@@ -84,35 +77,18 @@ export default function HelpOrder() {
         <span>Help orders</span>
       </TableHeader>
 
-      <Pagination>
-        <PageButtonArea>
-          <PageButton
-            disabled={page === 1}
-            type="button"
-            onClick={handlePrevPage}
-          >
-            Prev Page
-          </PageButton>
-          <span>{page}</span>
-          <PageButton
-            disabled={
-              helpOrders.length < perPage ||
-              page * helpOrders.length === allItems
-            }
-            type="button"
-            onClick={handleNextPage}
-          >
-            Next Page
-          </PageButton>
-        </PageButtonArea>
-        <SelectField
-          name="perPage"
-          defaultValue={defaultPageOption}
-          options={pageOptions}
-          onChange={handlePageOption}
-          classNamePrefix="perPagePicker"
-        />
-      </Pagination>
+      <Pagination
+        prevButtonDisabled={page === 1}
+        handlePrevPage={handlePrevPage}
+        page={page}
+        nextButtonDisabled={
+          helpOrders.length < perPage || page * helpOrders.length === allItems
+        }
+        handleNextPage={handleNextPage}
+        defaultPageOption={defaultPageOption}
+        pageOptions={pageOptions}
+        handlePageOption={handlePageOption}
+      />
 
       {helpOrders.length ? (
         <ListArea>
