@@ -10,6 +10,7 @@ import {
   TableHeader,
   ButtonArea,
   AddButton,
+  TableContainer,
   Table,
   EditButton,
   RemoveButton,
@@ -130,50 +131,52 @@ export default function Enrollment() {
       </Pagination>
 
       {enrollments.length ? (
-        <Table>
-          <thead>
-            <tr>
-              <th>Student</th>
-              <th>Plan</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th>Active</th>
-              <th> </th>
-            </tr>
-          </thead>
-          <tbody>
-            {enrollments.map(enrollment => (
-              <tr key={enrollment.id}>
-                <td>{enrollment.Student.name}</td>
-                <td>{enrollment.Plan.title}</td>
-                <td>{enrollment.formattedStartDate}</td>
-                <td>{enrollment.formattedEndDate}</td>
-                <td>
-                  <MdCheckCircle
-                    size={16}
-                    color={enrollment.active ? '#42cb59' : '#ddd'}
-                  />
-                </td>
-                <td id="options">
-                  <EditButton
-                    type="button"
-                    onClick={() => handleEnrollmentEdit(enrollment.id)}
-                  >
-                    edit
-                  </EditButton>
-                  <RemoveButton
-                    type="button"
-                    onClick={() => {
-                      handleEnrollmentRemove(enrollment.id);
-                    }}
-                  >
-                    remove
-                  </RemoveButton>
-                </td>
+        <TableContainer>
+          <Table>
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Plan</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Active</th>
+                <th> </th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {enrollments.map(enrollment => (
+                <tr className="item" key={enrollment.id}>
+                  <td>{enrollment.Student.name}</td>
+                  <td>{enrollment.Plan.title}</td>
+                  <td>{enrollment.formattedStartDate}</td>
+                  <td>{enrollment.formattedEndDate}</td>
+                  <td>
+                    <MdCheckCircle
+                      size={16}
+                      color={enrollment.active ? '#42cb59' : '#ddd'}
+                    />
+                  </td>
+                  <td id="options">
+                    <EditButton
+                      type="button"
+                      onClick={() => handleEnrollmentEdit(enrollment.id)}
+                    >
+                      edit
+                    </EditButton>
+                    <RemoveButton
+                      type="button"
+                      onClick={() => {
+                        handleEnrollmentRemove(enrollment.id);
+                      }}
+                    >
+                      remove
+                    </RemoveButton>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
       ) : (
         <NoEnrollmentArea>
           <h1>No enrollments found</h1>

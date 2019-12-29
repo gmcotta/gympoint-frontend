@@ -63,12 +63,17 @@ export const SearchField = styled.form`
   }
 `;
 
-export const Table = styled.table`
+export const TableContainer = styled.div`
   background-color: #fff;
   width: 100%;
   margin: 20px auto;
   border-radius: 4px;
   padding: 20px;
+`;
+
+export const Table = styled.table`
+  width: 100%;
+  border-collapse: collapse;
 
   th {
     text-transform: uppercase;
@@ -88,6 +93,12 @@ export const Table = styled.table`
 
   td#options {
     text-align: right;
+  }
+
+  tr.item {
+    & + tr {
+      border-top: 1px solid #eee;
+    }
   }
 `;
 
@@ -135,7 +146,7 @@ export const PageButtonArea = styled.div`
   span {
     margin: 0 10px;
     font-weight: bold;
-    background-color: #f5f5f5;
+    background-color: #fff;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;

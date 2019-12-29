@@ -8,6 +8,7 @@ import {
   Container,
   TableHeader,
   AddButton,
+  TableContainer,
   Table,
   EditButton,
   RemoveButton,
@@ -131,41 +132,43 @@ export default function Plan() {
       </Pagination>
 
       {plans.length ? (
-        <Table>
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Duration</th>
-              <th>Monthly price</th>
-              <th> </th>
-            </tr>
-          </thead>
-          <tbody>
-            {plans.map(plan => (
-              <tr key={plan.id}>
-                <td>{plan.title}</td>
-                <td>{plan.durationFormatted}</td>
-                <td>{plan.priceFormatted}</td>
-                <td id="options">
-                  <EditButton
-                    type="button"
-                    onClick={() => handlePlanEdit(plan.id)}
-                  >
-                    edit
-                  </EditButton>
-                  <RemoveButton
-                    type="button"
-                    onClick={() => {
-                      handlePlanRemove(plan.id);
-                    }}
-                  >
-                    remove
-                  </RemoveButton>
-                </td>
+        <TableContainer>
+          <Table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Duration</th>
+                <th>Monthly price</th>
+                <th> </th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {plans.map(plan => (
+                <tr className="item" key={plan.id}>
+                  <td>{plan.title}</td>
+                  <td>{plan.durationFormatted}</td>
+                  <td>{plan.priceFormatted}</td>
+                  <td id="options">
+                    <EditButton
+                      type="button"
+                      onClick={() => handlePlanEdit(plan.id)}
+                    >
+                      edit
+                    </EditButton>
+                    <RemoveButton
+                      type="button"
+                      onClick={() => {
+                        handlePlanRemove(plan.id);
+                      }}
+                    >
+                      remove
+                    </RemoveButton>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
       ) : (
         <NoStudentArea>
           <h1>No plans found</h1>

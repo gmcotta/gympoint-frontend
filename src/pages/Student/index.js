@@ -10,6 +10,7 @@ import {
   ButtonArea,
   AddButton,
   SearchField,
+  TableContainer,
   Table,
   EditButton,
   RemoveButton,
@@ -141,41 +142,43 @@ export default function Student() {
       </Pagination>
 
       {students.length ? (
-        <Table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>E-mail</th>
-              <th>Age</th>
-              <th> </th>
-            </tr>
-          </thead>
-          <tbody>
-            {students.map(student => (
-              <tr key={student.id}>
-                <td>{student.name}</td>
-                <td>{student.email}</td>
-                <td>{student.age}</td>
-                <td id="options">
-                  <EditButton
-                    type="button"
-                    onClick={() => handleStudentEdit(student.id)}
-                  >
-                    edit
-                  </EditButton>
-                  <RemoveButton
-                    type="button"
-                    onClick={() => {
-                      handleStudentRemove(student.id);
-                    }}
-                  >
-                    remove
-                  </RemoveButton>
-                </td>
+        <TableContainer>
+          <Table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>E-mail</th>
+                <th>Age</th>
+                <th> </th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {students.map(student => (
+                <tr className="item" key={student.id}>
+                  <td>{student.name}</td>
+                  <td>{student.email}</td>
+                  <td>{student.age}</td>
+                  <td id="options">
+                    <EditButton
+                      type="button"
+                      onClick={() => handleStudentEdit(student.id)}
+                    >
+                      edit
+                    </EditButton>
+                    <RemoveButton
+                      type="button"
+                      onClick={() => {
+                        handleStudentRemove(student.id);
+                      }}
+                    >
+                      remove
+                    </RemoveButton>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
       ) : (
         <NoStudentArea>
           <h1>No students found</h1>
