@@ -4,11 +4,14 @@ import { parseISO, format } from 'date-fns';
 import { toast } from 'react-toastify';
 import api from '~/services/api';
 import history from '~/services/history';
+import Pagination from '~/components/Pagination';
+import { pageOptions } from '~/components/pageOptions';
 import {
   Container,
   TableHeader,
   ButtonArea,
   AddButton,
+  TableContainer,
   Table,
   EditButton,
   RemoveButton,
@@ -16,21 +19,29 @@ import {
 } from './styles';
 
 export default function Enrollment() {
+  const defaultPageOption = pageOptions[0];
+  const [perPage, setPerPage] = useState(defaultPageOption.value);
+  const [page, setPage] = useState(1);
+  const [allItems, setAllItems] = useState();
   const [enrollments, setEnrollments] = useState([]);
 
   useEffect(() => {
     async function loadEnrollments() {
-      const response = await api.get('enrollments');
-      const enrollmentsData = response.data.filter(e => e.student_id !== null);
-      const newEnrollment = enrollmentsData.map(e => ({
+      const { data: allEnrollments } = await api.get('enrollments');
+      setAllItems(allEnrollments.length);
+
+      const { data: response } = await api.get('enrollments', {
+        params: { page, perPage },
+      });
+      const enrollmentsData = response.map(e => ({
         ...e,
         formattedStartDate: format(parseISO(e.start_date), "MMMM' 'dd', 'yyyy"),
         formattedEndDate: format(parseISO(e.end_date), "MMMM' 'dd', 'yyyy"),
       }));
-      setEnrollments(newEnrollment);
+      setEnrollments(enrollmentsData);
     }
     loadEnrollments();
-  }, []);
+  }, [page, perPage]);
 
   function handleAddEnrollment() {
     history.push('enrollments/new');
@@ -55,6 +66,21 @@ export default function Enrollment() {
     }
   }
 
+  function handleNextPage() {
+    setPage(page + 1);
+  }
+
+  function handlePrevPage() {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  }
+
+  function handlePageOption(e) {
+    setPerPage(e.value);
+    setPage(1);
+  }
+
   return (
     <Container>
       <TableHeader>
@@ -67,51 +93,66 @@ export default function Enrollment() {
         </ButtonArea>
       </TableHeader>
 
+      <Pagination
+        prevButtonDisabled={page === 1}
+        handlePrevPage={handlePrevPage}
+        page={page}
+        nextButtonDisabled={
+          enrollments.length < perPage || page * enrollments.length === allItems
+        }
+        handleNextPage={handleNextPage}
+        defaultPageOption={defaultPageOption}
+        pageOptions={pageOptions}
+        handlePageOption={handlePageOption}
+      />
+
       {enrollments.length ? (
-        <Table>
-          <thead>
-            <tr>
-              <th>Student</th>
-              <th>Plan</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th>Active</th>
-              <th> </th>
-            </tr>
-          </thead>
-          <tbody>
-            {enrollments.map(enrollment => (
-              <tr key={enrollment.id}>
-                <td>{enrollment.Student.name}</td>
-                <td>{enrollment.Plan.title}</td>
-                <td>{enrollment.formattedStartDate}</td>
-                <td>{enrollment.formattedEndDate}</td>
-                <td>
-                  <MdCheckCircle
-                    size={16}
-                    color={enrollment.active ? '#42cb59' : '#ddd'}
-                  />
-                </td>
-                <td id="options">
-                  <EditButton
-                    type="button"
-                    onClick={() => handleEnrollmentEdit(enrollment.id)}
-                  >
-                    edit
-                  </EditButton>
-                  <RemoveButton
-                    type="button"
-                    onClick={() => {
-                      handleEnrollmentRemove(enrollment.id);
-                    }}
-                  >
-                    remove
-                  </RemoveButton>
-                </td>
+        <TableContainer>
+          <Table>
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Plan</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Active</th>
+                <th> </th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {enrollments.map(enrollment => (
+                <tr className="item" key={enrollment.id}>
+                  <td>{enrollment.Student.name}</td>
+                  <td>{enrollment.Plan.title}</td>
+                  <td>{enrollment.formattedStartDate}</td>
+                  <td>{enrollment.formattedEndDate}</td>
+                  <td>
+                    <MdCheckCircle
+                      size={16}
+                      color={enrollment.active ? '#42cb59' : '#ddd'}
+                    />
+                  </td>
+                  <td id="options">
+                    <EditButton
+                      type="button"
+                      onClick={() => handleEnrollmentEdit(enrollment.id)}
+                    >
+                      edit
+                    </EditButton>
+                    <RemoveButton
+                      type="button"
+                      onClick={() => {
+                        handleEnrollmentRemove(enrollment.id);
+                      }}
+                    >
+                      remove
+                    </RemoveButton>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
       ) : (
         <NoEnrollmentArea>
           <h1>No enrollments found</h1>

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Popup from 'reactjs-popup';
 import { Input } from '@rocketseat/unform';
 import { toast } from 'react-toastify';
+import Pagination from '~/components/Pagination';
+import { pageOptions } from '~/components/pageOptions';
 import {
   Container,
   TableHeader,
@@ -15,19 +17,35 @@ import {
 import api from '~/services/api';
 
 export default function HelpOrder() {
+  const defaultPageOption = pageOptions[0];
+  const [perPage, setPerPage] = useState(defaultPageOption.value);
+  const [page, setPage] = useState(1);
+  const [allItems, setAllItems] = useState();
+
   const [helpOrders, setHelpOrders] = useState([]);
 
+  useEffect(() => {
+    async function helperLoadHelpOrder() {
+      const { data: allHelpOrders } = await api.get('help-orders');
+      setAllItems(allHelpOrders.length);
+
+      const { data: response } = await api.get('help-orders', {
+        params: { page, perPage },
+      });
+      setHelpOrders(response);
+    }
+    helperLoadHelpOrder();
+  }, [page, perPage]);
+
   async function loadHelpOrder() {
-    const response = await api.get('help-orders');
-    const helpOrderData = response.data;
-    setHelpOrders(helpOrderData);
+    const { data: response } = await api.get('help-orders', {
+      params: { page, perPage },
+    });
+    setHelpOrders(response);
   }
 
-  useEffect(() => {
-    loadHelpOrder();
-  }, []);
-
   async function handleStudentAnswer(data, id) {
+    setPage(1);
     try {
       await api.post(`help-orders/${id}/answer`, data);
       loadHelpOrder();
@@ -38,11 +56,40 @@ export default function HelpOrder() {
     }
   }
 
+  function handleNextPage() {
+    setPage(page + 1);
+  }
+
+  function handlePrevPage() {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  }
+
+  function handlePageOption(e) {
+    setPerPage(e.value);
+    setPage(1);
+  }
+
   return (
     <Container>
       <TableHeader>
         <span>Help orders</span>
       </TableHeader>
+
+      <Pagination
+        prevButtonDisabled={page === 1}
+        handlePrevPage={handlePrevPage}
+        page={page}
+        nextButtonDisabled={
+          helpOrders.length < perPage || page * helpOrders.length === allItems
+        }
+        handleNextPage={handleNextPage}
+        defaultPageOption={defaultPageOption}
+        pageOptions={pageOptions}
+        handlePageOption={handlePageOption}
+      />
+
       {helpOrders.length ? (
         <ListArea>
           <strong>Student</strong>

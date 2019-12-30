@@ -36,15 +36,18 @@ export const FormContent = styled.div`
 
   span {
     color: #ee4d64;
+    max-width: 180px;
   }
 
   .studentPicker__control {
     height: 45px;
+    border-color: #ddd;
   }
 
   .planPicker__control {
     height: 45px;
     width: 200px;
+    border-color: #ddd;
   }
 
   .planPicker__placeholder {

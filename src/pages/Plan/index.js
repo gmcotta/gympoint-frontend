@@ -3,24 +3,36 @@ import { MdAdd } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import api from '~/services/api';
 import history from '~/services/history';
+import Pagination from '~/components/Pagination';
+import { pageOptions } from '~/components/pageOptions';
+import { formatPrice } from '~/util/format';
 import {
   Container,
   TableHeader,
   AddButton,
+  TableContainer,
   Table,
   EditButton,
   RemoveButton,
   NoStudentArea,
 } from './styles';
-import { formatPrice } from '~/util/format';
 
-export default function Student() {
+export default function Plan() {
+  const defaultPageOption = pageOptions[0];
+  const [perPage, setPerPage] = useState(defaultPageOption.value);
+  const [page, setPage] = useState(1);
+  const [allItems, setAllItems] = useState();
   const [plans, setPlans] = useState([]);
 
   useEffect(() => {
-    async function loadStudents() {
-      const response = await api.get('plans');
-      const plansData = response.data.map(plan => ({
+    async function loadPlans() {
+      const { data: allPlans } = await api.get('plans');
+      setAllItems(allPlans.length);
+
+      const { data: response } = await api.get('plans', {
+        params: { page, perPage },
+      });
+      const plansData = response.map(plan => ({
         ...plan,
         durationFormatted:
           plan.duration === 1
@@ -29,17 +41,15 @@ export default function Student() {
         priceFormatted: formatPrice(plan.price),
       }));
       setPlans(plansData);
-      // console.tron.log(plansData);
     }
-    loadStudents();
-  }, []);
+    loadPlans();
+  }, [page, perPage]);
 
   function handleAddPlan() {
     history.push('plans/new');
   }
 
   function handlePlanEdit(id) {
-    // console.tron.log(`Edit student ${id}`);
     history.push(`plans/${id}`);
   }
 
@@ -50,12 +60,26 @@ export default function Student() {
         const newPlans = plans.filter(plan => plan.id !== plan_id);
         setPlans(newPlans);
         toast.success('Plan removed successfully.');
-        // console.tron.log(studentsData);
       } catch (error) {
         toast.error('An error occurred. Plase, try again later.');
         console.tron.log(error);
       }
     }
+  }
+
+  function handleNextPage() {
+    setPage(page + 1);
+  }
+
+  function handlePrevPage() {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  }
+
+  function handlePageOption(e) {
+    setPerPage(e.value);
+    setPage(1);
   }
 
   return (
@@ -67,42 +91,58 @@ export default function Student() {
           <span>Add</span>
         </AddButton>
       </TableHeader>
+
+      <Pagination
+        prevButtonDisabled={page === 1}
+        handlePrevPage={handlePrevPage}
+        page={page}
+        nextButtonDisabled={
+          plans.length < perPage || page * plans.length === allItems
+        }
+        handleNextPage={handleNextPage}
+        defaultPageOption={defaultPageOption}
+        pageOptions={pageOptions}
+        handlePageOption={handlePageOption}
+      />
+
       {plans.length ? (
-        <Table>
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Duration</th>
-              <th>Monthly price</th>
-              <th> </th>
-            </tr>
-          </thead>
-          <tbody>
-            {plans.map(plan => (
-              <tr key={plan.id}>
-                <td>{plan.title}</td>
-                <td>{plan.durationFormatted}</td>
-                <td>{plan.priceFormatted}</td>
-                <td id="options">
-                  <EditButton
-                    type="button"
-                    onClick={() => handlePlanEdit(plan.id)}
-                  >
-                    edit
-                  </EditButton>
-                  <RemoveButton
-                    type="button"
-                    onClick={() => {
-                      handlePlanRemove(plan.id);
-                    }}
-                  >
-                    remove
-                  </RemoveButton>
-                </td>
+        <TableContainer>
+          <Table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Duration</th>
+                <th>Monthly price</th>
+                <th> </th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {plans.map(plan => (
+                <tr className="item" key={plan.id}>
+                  <td>{plan.title}</td>
+                  <td>{plan.durationFormatted}</td>
+                  <td>{plan.priceFormatted}</td>
+                  <td id="options">
+                    <EditButton
+                      type="button"
+                      onClick={() => handlePlanEdit(plan.id)}
+                    >
+                      edit
+                    </EditButton>
+                    <RemoveButton
+                      type="button"
+                      onClick={() => {
+                        handlePlanRemove(plan.id);
+                      }}
+                    >
+                      remove
+                    </RemoveButton>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
       ) : (
         <NoStudentArea>
           <h1>No plans found</h1>

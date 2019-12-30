@@ -22,13 +22,8 @@ export default function EditStudent() {
 
   useEffect(() => {
     async function loadStudents() {
-      const response = await api.get('students');
-      const studentsData = response.data;
-      console.tron.log(studentsData);
-      const currentStudent = studentsData.find(s => s.id === Number(id));
-      console.tron.log(currentStudent);
-
-      setStudent(currentStudent);
+      const { data: response } = await api.get(`students/${id}`);
+      setStudent(response);
     }
     loadStudents();
   }, [id]);
@@ -61,7 +56,11 @@ export default function EditStudent() {
 
   return (
     <Container>
-      <Form schema={schema} initialData={student} onSubmit={updateStudent}>
+      <Form
+        schema={schema}
+        initialData={student.student}
+        onSubmit={updateStudent}
+      >
         <FormHeader>
           <span>Edit Student</span>
           <ButtonArea>

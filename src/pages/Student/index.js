@@ -3,12 +3,15 @@ import { MdAdd, MdSearch } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import api from '~/services/api';
 import history from '~/services/history';
+import Pagination from '~/components/Pagination';
+import { pageOptions } from '~/components/pageOptions';
 import {
   Container,
   TableHeader,
   ButtonArea,
   AddButton,
   SearchField,
+  TableContainer,
   Table,
   EditButton,
   RemoveButton,
@@ -16,20 +19,27 @@ import {
 } from './styles';
 
 export default function Student() {
-  const [students, setStudents] = useState([]);
+  const defaultPageOption = pageOptions[0];
+  const [perPage, setPerPage] = useState(defaultPageOption.value);
+  const [page, setPage] = useState(1);
   const [name, setName] = useState('');
+  const [allItems, setAllItems] = useState();
+  const [students, setStudents] = useState([]);
 
   useEffect(() => {
     async function loadStudents() {
-      const response = await api.get('students', {
+      const { data: allStudents } = await api.get('students', {
         params: { name },
       });
-      const studentsData = response.data;
-      setStudents(studentsData);
-      console.tron.log(studentsData);
+      setAllItems(allStudents.length);
+
+      const { data: response } = await api.get('students', {
+        params: { name, page, perPage },
+      });
+      setStudents(response);
     }
     loadStudents();
-  }, [name]);
+  }, [name, page, perPage]);
 
   function handleAddStudent() {
     history.push('students/new');
@@ -37,10 +47,10 @@ export default function Student() {
 
   function handleStudentName(e) {
     setName(e.target.value);
+    setPage(1);
   }
 
   function handleStudentEdit(id) {
-    // console.tron.log(`Edit student ${id}`);
     history.push(`students/${id}`);
   }
 
@@ -53,12 +63,26 @@ export default function Student() {
         );
         setStudents(newStudents);
         toast.success('Student removed successfully.');
-        // console.tron.log(studentsData);
       } catch (error) {
         toast.error('An error occurred. Plase, try again later.');
         console.tron.log(error);
       }
     }
+  }
+
+  function handleNextPage() {
+    setPage(page + 1);
+  }
+
+  function handlePrevPage() {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  }
+
+  function handlePageOption(e) {
+    setPerPage(e.value);
+    setPage(1);
   }
 
   return (
@@ -80,43 +104,57 @@ export default function Student() {
           </SearchField>
         </ButtonArea>
       </TableHeader>
+      <Pagination
+        prevButtonDisabled={page === 1}
+        handlePrevPage={handlePrevPage}
+        page={page}
+        nextButtonDisabled={
+          students.length < perPage || page * students.length === allItems
+        }
+        handleNextPage={handleNextPage}
+        defaultPageOption={defaultPageOption}
+        pageOptions={pageOptions}
+        handlePageOption={handlePageOption}
+      />
 
       {students.length ? (
-        <Table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>E-mail</th>
-              <th>Age</th>
-              <th> </th>
-            </tr>
-          </thead>
-          <tbody>
-            {students.map(student => (
-              <tr key={student.id}>
-                <td>{student.name}</td>
-                <td>{student.email}</td>
-                <td>{student.age}</td>
-                <td id="options">
-                  <EditButton
-                    type="button"
-                    onClick={() => handleStudentEdit(student.id)}
-                  >
-                    edit
-                  </EditButton>
-                  <RemoveButton
-                    type="button"
-                    onClick={() => {
-                      handleStudentRemove(student.id);
-                    }}
-                  >
-                    remove
-                  </RemoveButton>
-                </td>
+        <TableContainer>
+          <Table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>E-mail</th>
+                <th>Age</th>
+                <th> </th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {students.map(student => (
+                <tr className="item" key={student.id}>
+                  <td>{student.name}</td>
+                  <td>{student.email}</td>
+                  <td>{student.age}</td>
+                  <td id="options">
+                    <EditButton
+                      type="button"
+                      onClick={() => handleStudentEdit(student.id)}
+                    >
+                      edit
+                    </EditButton>
+                    <RemoveButton
+                      type="button"
+                      onClick={() => {
+                        handleStudentRemove(student.id);
+                      }}
+                    >
+                      remove
+                    </RemoveButton>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
       ) : (
         <NoStudentArea>
           <h1>No students found</h1>

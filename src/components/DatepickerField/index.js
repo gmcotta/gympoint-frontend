@@ -21,7 +21,7 @@ export default function DatepickerField({ name, ...rest }) {
   }, [ref.current, fieldName]); // eslint-disable-line
 
   return (
-    <div>
+    <section>
       <ReactDatePicker
         name={fieldName}
         dateFormat="MM/dd/yyyy"
@@ -31,7 +31,7 @@ export default function DatepickerField({ name, ...rest }) {
         {...rest}
       />
       {error && <span>{error}</span>}
-    </div>
+    </section>
   );
 }
 

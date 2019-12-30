@@ -26,7 +26,9 @@ import { formatPrice } from '~/util/format';
 
 export default function NewEnrollment() {
   const schema = Yup.object().shape({
-    start_date: Yup.date().typeError('Please, select a valid value.'),
+    start_date: Yup.date()
+      .min(new Date(), 'Please, select a valid value.')
+      .typeError('Please, select a valid value.'),
   });
 
   const [enrollment, setEnrollment] = useState({});
@@ -68,7 +70,10 @@ export default function NewEnrollment() {
   }, []);
 
   const handleSelectOptions = async inputValue => {
-    const { data: response } = await api.get('students');
+    const name = '';
+    const { data: response } = await api.get('students', {
+      params: { name },
+    });
     const studentData = response.map(s => ({
       label: s.name,
       value: s.id,

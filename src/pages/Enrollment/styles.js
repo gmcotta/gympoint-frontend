@@ -63,12 +63,17 @@ export const SearchField = styled.form`
   }
 `;
 
-export const Table = styled.table`
+export const TableContainer = styled.div`
   background-color: #fff;
   width: 100%;
   margin: 20px auto;
   border-radius: 4px;
   padding: 20px;
+`;
+
+export const Table = styled.table`
+  width: 100%;
+  border-collapse: collapse;
 
   th {
     text-transform: uppercase;
@@ -82,6 +87,12 @@ export const Table = styled.table`
 
   td#options {
     text-align: right;
+  }
+
+  tr.item {
+    & + tr {
+      border-top: 1px solid #eee;
+    }
   }
 `;
 
@@ -107,4 +118,41 @@ export const NoEnrollmentArea = styled.div`
   padding: 20px;
   text-align: center;
   color: #999;
+`;
+
+export const Pagination = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+
+  .perPagePicker__control {
+    height: 40px;
+    width: 200px;
+    border-color: #ddd;
+  }
+`;
+
+export const PageButtonArea = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  span {
+    margin: 0 10px;
+    font-weight: bold;
+    background-color: #f5f5f5;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+`;
+
+export const PageButton = styled.button`
+  background-color: #de3b3b;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 4px;
+  opacity: ${props => (props.disabled ? 0.5 : 1)};
 `;
